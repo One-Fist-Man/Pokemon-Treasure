@@ -1,3 +1,4 @@
 export enum QueryKeys { 
-  Sets='sets'
+  Sets='sets',
+  Set='set'
 }

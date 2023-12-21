@@ -1,12 +1,16 @@
 import { useCartStore } from "@/service/zustand";
+import { useEffect } from "react";
 
 const CartItem = ({ cart }: any) => {
-  const { removeItem, decrementCarts }: any = useCartStore();
+  const { removeItem, decrementCarts, cartList }: any = useCartStore();
 
   const handelRemove = (data: any) => {
     removeItem(data);
     decrementCarts();
   };
+  useEffect(() => {
+    localStorage.setItem("cardData", JSON.stringify(cartList));
+  }, [cartList]);
 
   return (
     <div className="flex items-center border-2">
