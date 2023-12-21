@@ -1,41 +1,74 @@
 import { getCardById } from "@/service/NetworkCalls";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/enums/enums";
 import { useCartStore } from "@/service/zustand";
 
 export const CartModal = ({ array }: any) => {
   const id = array[1];
   const closeModal = array[0];
-  const { number_of_carts, incrementCarts, cartList } = useCartStore();
-  const queryClient = new QueryClient();
-  
+  const { number_of_carts, incrementCarts, cartList, AddToCart }: any =
+    useCartStore();
+  const queryClient = useQueryClient();
+
   const { data }: any = useQuery({
-    queryKey: [QueryKeys.Sets],
+    queryKey: [QueryKeys.Set],
     queryFn: async () => {
       const dataset = await getCardById(id);
       return dataset;
     },
   });
+  // console.log({ data });
 
   const setCartData = () => {
     incrementCarts();
-    cartList.push({
+    AddToCart({
       name: data.name,
       images: data.images.logo,
       id: number_of_carts,
     });
   };
 
-  if (!data) return <div>loading</div>;
+  useEffect(() => {
+    localStorage.setItem("cardData", JSON.stringify(cartList));
+  }, [cartList]);
+
+  console.log("card modal page");
+
+  if (data == null)
+    return (
+      <div className="fixed inset-0 bg-gray-500 bg-opacity-75 ">
+        <div className="bg-white fixed inset-x-1/3 inset-y-16 ">
+          <div className="text-center h-1/2 flex flex-col justify-center  m-20">
+            <div>loading</div>
+          </div>
+        </div>
+      </div>
+    );
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 ">
-      <div className="bg-white fixed inset-x-1/3 inset-y-16 ">
+    <div
+      className="fixed inset-0 bg-gray-500 bg-opacity-75 "
+      onClick={() => {
+        closeModal(false);
+        queryClient.setQueryData([QueryKeys.Set], () => {
+          return null;
+        });
+      }}
+    >
+      <div
+        className="bg-white fixed inset-x-1/3 inset-y-16 "
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <button
           className="border-2 py-2 px-4 m-1 bg-red-400 text-white hover:bg-red-600 dark:text-gray-400  active:bg-red-600 rounded-full"
           onClick={() => {
             closeModal(false);
+            queryClient.setQueryData([QueryKeys.Set], () => {
+              return null;
+            });
           }}
         >
           X
@@ -43,7 +76,7 @@ export const CartModal = ({ array }: any) => {
         <div>
           <div className=" p-2 mx-4 bg-slate-300 hover:bg-slate-400 active:bg-slate-600 flex items-center  rounded-md">
             <Image
-            className=" p-2 mx-20 "
+              className=" p-2 mx-20 "
               src={data.images.logo}
               width={300}
               height={50}

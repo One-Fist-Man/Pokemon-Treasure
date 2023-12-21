@@ -1,15 +1,36 @@
-import type { InferGetStaticPropsType, GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 import { getAllPokemonCards } from "@/service/NetworkCalls";
 import { CardList } from "@/components/Pokemon-Cards/CardsList";
+import { QueryClient, dehydrate } from "@tanstack/react-query";
+import { QueryKeys } from "@/enums/enums";
+import { useSets } from "@/hooks";
 
 export const getStaticProps = (async (context) => {
-  const cards = await getAllPokemonCards();
-  return { props: { cards } };
+  try {
+    const queryClient = new QueryClient();
+    await queryClient.prefetchQuery({
+      queryKey: [QueryKeys.Sets],
+      queryFn: async () => {
+        const dataset = await getAllPokemonCards();
+        return dataset;
+      },
+    });
+    return { props: { dehydratedState: dehydrate(queryClient) } };
+  } catch (e) {
+    return {
+      props: {},
+      revalidate: 10,
+    };
+  }
+
 }) satisfies GetStaticProps<{}>;
 
-const Home = ({ cards }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home = () => {
+  const { data } = useSets()
+  const cards: any= data;
+  // console.log({cards})
   cards.reverse();
-
+  
   return (
     <main>
       <CardList cards={cards}></CardList>

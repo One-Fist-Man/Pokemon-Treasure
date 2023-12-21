@@ -1,26 +1,30 @@
 import { QueryKeys } from "@/enums/enums";
+import { getAllPokemonCards, getCardById } from "@/service/NetworkCalls";
 import { useQuery } from "@tanstack/react-query";
-import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 
 export const useSets = () => {
   return useQuery({
     queryKey: [QueryKeys.Sets],
     queryFn: async () => {
-      const sets = await PokemonTCG.getAllSets();
+      const sets = await getAllPokemonCards();
       return sets;
     },
+    // enabled: id != undefined,
     enabled: true,
     refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 };
 
 export const useSetsByID = (id: string) => {
   return useQuery({
-    queryKey: [QueryKeys.Sets],
+    queryKey: [QueryKeys.Set],
     queryFn: async () => {
-      const sets = await PokemonTCG.findSetByID(id);
-      return sets;
+      const set = await getCardById(id);
+      return set;
     },
-    enabled: true,
+    enabled: id != undefined,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 };

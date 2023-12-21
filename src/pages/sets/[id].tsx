@@ -1,13 +1,15 @@
+import Footer from "@/components/Footer/Footer";
 import { ChangeNameModal } from "@/components/Modal/ChangeNameModal";
 import { QueryKeys } from "@/enums/enums";
-import { useSets, useSetsByID } from "@/hooks";
+import { useSetsByID } from "@/hooks";
 import { getCardById } from "@/service/NetworkCalls";
 import { useCartStore } from "@/service/zustand";
-import { QueryClient, dehydrate, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const getStaticPaths: GetStaticPaths = async (qry) => {
   const sets: PokemonTCG.Set[] = await PokemonTCG.getAllSets();
@@ -25,7 +27,7 @@ export const getStaticProps: GetStaticProps = async (context: any) => {
   try {
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery({
-      queryKey: [QueryKeys.Sets],
+      queryKey: [QueryKeys.Set],
       queryFn: async () => {
         const dataset = await getCardById(id);
         return dataset;
@@ -42,27 +44,34 @@ export const getStaticProps: GetStaticProps = async (context: any) => {
 
 const PokemonProfile = () => {
   const [openModal, setOpenModal] = useState(false);
-  const { number_of_carts, incrementCarts, cartList } = useCartStore();
+  const { number_of_carts, incrementCarts, cartList, AddToCart }: any =
+    useCartStore();
 
-  const cardsData = useSets();
-  const data: any = cardsData.data;
+  const router = useRouter();
+  const id = router.query.id;
+
+  const { data } = useSetsByID(id as string);
+  const Alldata: any = data;
 
   const setCartData = () => {
     incrementCarts();
-    cartList.push({
-      name: data.name,
-      images: data.images.logo,
+    AddToCart({
+      name: Alldata.name,
+      images: Alldata.images.logo,
       id: number_of_carts,
     });
   };
+  useEffect(() => {
+    localStorage.setItem("cardData", JSON.stringify(cartList));
+  }, [cartList]);
 
-  if (data !== undefined) {
+  if (Alldata !== undefined) {
     return (
       <div className="flex justify-center p-8 rounded">
         <div className="border-2 p-4 text-center">
           <Image
-            src={data?.images?.logo}
-            alt={`${data.id} image`}
+            src={Alldata?.images?.logo}
+            alt={`${Alldata.id} image`}
             width={300}
             height={300}
           />
@@ -74,14 +83,14 @@ const PokemonProfile = () => {
           </button>
           <h5>
             <strong>ID: </strong>
-            {data.id}
+            {Alldata.id}
           </h5>
 
           <div className="flex items-center flex-col">
             <div className="flex">
               <h5 className="">
                 <strong>Name: </strong>
-                {data.name}
+                {Alldata.name}
               </h5>
               <div>
                 <button
@@ -107,33 +116,34 @@ const PokemonProfile = () => {
               </div>
             </div>
 
-            {openModal && <ChangeNameModal array={[setOpenModal, data]} />}
+            {openModal && <ChangeNameModal array={[setOpenModal, Alldata]} />}
           </div>
           <h5>
             <strong>Printed Total: </strong>
-            {data.printedTotal}
+            {Alldata.printedTotal}
           </h5>
           <h5>
             <strong>PtcgoCode: </strong>
-            {data.ptcgoCode}
+            {Alldata.ptcgoCode}
           </h5>
           <h5>
             <strong>Release Date: </strong>
-            {data.releaseDate}
+            {Alldata.releaseDate}
           </h5>
           <h5>
             <strong>Series: </strong>
-            {data.series}
+            {Alldata.series}
           </h5>
           <h5>
             <strong>Total: </strong>
-            {data.total}
+            {Alldata.total}
           </h5>
           <h5>
             <strong>Updated At: </strong>
-            {data.updatedAt}
+            {Alldata.updatedAt}
           </h5>
         </div>
+        <Footer />
       </div>
     );
   } else {
@@ -142,6 +152,7 @@ const PokemonProfile = () => {
         <h1 className="uppercase tracking-widest text-gray-500">
           404 | Not Found
         </h1>
+        <Footer />
       </div>
     );
   }

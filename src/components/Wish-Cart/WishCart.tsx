@@ -3,7 +3,6 @@ import CartItem from "./CartItem";
 
 const WishCart = () => {
   const { cartList } = useCartStore();
-
   return (
     <div className="border-2">
       <div className="flex items-center ">
@@ -24,7 +23,7 @@ const WishCart = () => {
       <hr />
       <div className="">
         {cartList.length == 0 ? (
-          <div className="font-bold h-screen text-center py-8">
+          <div className="font-bold  text-center py-8">
             No items in cart yet.
           </div>
         ) : (

@@ -1,11 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useCartStore } from "@/service/zustand";
 import Link from "next/link";
 import router from "next/router";
 
 export const Navbar = () => {
-  const { number_of_carts, login, loginOn } = useCartStore();
+  const {
+    number_of_carts,
+    login,
+    loginOn,
+    cartList,
+    AddLocalStorageToCartList,
+    SetNumberOfCarts,
+    loginOff,
+  }: any = useCartStore();
+
+  useEffect(() => {
+    if (cartList.length == 0) {
+      const LoginAndLogout = localStorage
+        ? JSON.parse(localStorage.getItem("login") as string)
+        : 0;
+      if (LoginAndLogout) loginOn();
+      const items = localStorage
+        ? JSON.parse(localStorage.getItem("cardData") as string)
+        : [];
+      if (items) {
+        AddLocalStorageToCartList(items);
+        SetNumberOfCarts(items.length);
+      }
+    }
+  }, []);
+
+  const logOutHandler = () => {
+    loginOff();
+    localStorage.setItem("login", JSON.stringify(login));
+  };
 
   return (
     <div className="border-2 flex  basis-1/2 justify-center bg-red-600 ">
@@ -13,7 +42,7 @@ export const Navbar = () => {
         <div className="">
           <Link href="/">
             <Image
-              src="/images/Captcccccure.PNG"
+              src="/images/pokemon-tresure.png"
               width={570}
               height={10}
               alt="Pokemon"
@@ -63,7 +92,9 @@ export const Navbar = () => {
           </div>
 
           <button
-            onClick={loginOn}
+            onClick={() => {
+              logOutHandler();
+            }}
             className=" rounded-lg font-bold text-white bg-gray-500 hover:bg-gray-600 active:bg-gray-700  p-4 m-3 "
           >
             Log Out

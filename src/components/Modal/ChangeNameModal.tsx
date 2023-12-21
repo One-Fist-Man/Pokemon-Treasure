@@ -21,7 +21,7 @@ export const ChangeNameModal = ({ array }: any) => {
       return changeTitle(card);
     },
     onSuccess: (card) => {
-      queryClient.setQueryData([QueryKeys.Sets], () => {
+      queryClient.setQueryData([QueryKeys.Set], () => {
         return card;
       });
     },
@@ -29,10 +29,6 @@ export const ChangeNameModal = ({ array }: any) => {
 
   const handelName = (e: any) => {
     setChangedName(e.target.value);
-  };
-
-  const handelSubmit = (e: any) => {
-    e.preventDefault();
   };
 
   return (
@@ -54,15 +50,18 @@ export const ChangeNameModal = ({ array }: any) => {
                   <strong>Name: </strong>
                   {data.name}
                 </h5>
-
                 <input
                   className="border-2 mx-2"
                   type="text"
                   value={changedName}
                   onChange={handelName}
                 />
-
-                <button className="border-2 rounded-full px-2 mx-2" onClick={() => mutation.mutate(data)}>Click</button>
+                <button
+                  className="border-2 rounded-full px-2 mx-2"
+                  onClick={() => mutation.mutate(data)}
+                >
+                  Click
+                </button>
               </div>
             </div>
           </div>
