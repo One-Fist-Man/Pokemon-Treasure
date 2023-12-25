@@ -1,11 +1,16 @@
-import type { GetStaticProps } from "next";
+import type { GetStaticProps, GetStaticPropsContext, PreviewData } from "next";
 import { getAllPokemonCards } from "@/service/NetworkCalls";
 import { CardList } from "@/components/Pokemon-Cards/CardsList";
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { QueryKeys } from "@/enums/enums";
 import { useSets } from "@/hooks";
+import { Set } from "pokemon-tcg-sdk-typescript/dist/sdk";
+import { ParsedUrlQuery } from "querystring";
 
-export const getStaticProps = (async (context) => {
+export const getStaticProps = (async (
+  context: GetStaticPropsContext<ParsedUrlQuery, PreviewData>
+) => {
+  // console.log('initial server');
   try {
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery({
@@ -22,15 +27,12 @@ export const getStaticProps = (async (context) => {
       revalidate: 10,
     };
   }
-
 }) satisfies GetStaticProps<{}>;
 
 const Home = () => {
-  const { data } = useSets()
-  const cards: any= data;
-  // console.log({cards})
-  cards.reverse();
-  
+  const { data } = useSets();
+  const cards: Set[] | undefined = data;
+  cards?.reverse();
   return (
     <main>
       <CardList cards={cards}></CardList>

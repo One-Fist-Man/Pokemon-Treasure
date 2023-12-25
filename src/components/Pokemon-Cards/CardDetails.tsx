@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { CartModal } from "../Modal/CartModal";
+import { IotherInfo } from "@/types/types";
 
-export const CardDetails = ({ otherInfo }: any) => {
+export const CardDetails = ({ otherInfo }: { otherInfo: IotherInfo }) => {
   const [openModal, setOpenModal] = useState(false);
 
   return (

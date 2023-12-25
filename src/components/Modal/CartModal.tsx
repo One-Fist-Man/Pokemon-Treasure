@@ -1,31 +1,40 @@
 import { getCardById } from "@/service/NetworkCalls";
-import React, { useEffect } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import Image from "next/image";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  UseQueryResult,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { QueryKeys } from "@/enums/enums";
 import { useCartStore } from "@/service/zustand";
+import { Set } from "pokemon-tcg-sdk-typescript/dist/sdk";
+import { Store } from "@/types/types";
 
-export const CartModal = ({ array }: any) => {
+export const CartModal = ({
+  array,
+}: {
+  array: [Dispatch<SetStateAction<boolean>>, string];
+}) => {
   const id = array[1];
   const closeModal = array[0];
-  const { number_of_carts, incrementCarts, cartList, AddToCart }: any =
+  const { number_of_carts, incrementCarts, cartList, AddToCart }: Store =
     useCartStore();
   const queryClient = useQueryClient();
 
-  const { data }: any = useQuery({
+  const { data }: UseQueryResult<Set, Error> = useQuery({
     queryKey: [QueryKeys.Set],
     queryFn: async () => {
       const dataset = await getCardById(id);
       return dataset;
     },
   });
-  // console.log({ data });
 
   const setCartData = () => {
     incrementCarts();
     AddToCart({
-      name: data.name,
-      images: data.images.logo,
+      name: data?.name,
+      images: data?.images.logo,
       id: number_of_carts,
     });
   };
@@ -33,8 +42,6 @@ export const CartModal = ({ array }: any) => {
   useEffect(() => {
     localStorage.setItem("cardData", JSON.stringify(cartList));
   }, [cartList]);
-
-  console.log("card modal page");
 
   if (data == null)
     return (
@@ -74,7 +81,7 @@ export const CartModal = ({ array }: any) => {
           X
         </button>
         <div>
-          <div className=" p-2 mx-4 bg-slate-300 hover:bg-slate-400 active:bg-slate-600 flex items-center  rounded-md">
+          <div className=" p-2 mx-4 bg-slate-300 hover:bg-slate-400 active:bg-slate-600 flex items-center justify-center rounded-md">
             <Image
               className=" p-2 mx-20 "
               src={data.images.logo}

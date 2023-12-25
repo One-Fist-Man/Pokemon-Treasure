@@ -1,10 +1,11 @@
 import { useCartStore } from "@/service/zustand";
+import { Icart, Store } from "@/types/types";
 import { useEffect } from "react";
 
-const CartItem = ({ cart }: any) => {
-  const { removeItem, decrementCarts, cartList }: any = useCartStore();
-
-  const handelRemove = (data: any) => {
+const CartItem = ({ cart }: {cart:Icart}) => {
+  const { removeItem, decrementCarts, cartList }: Store = useCartStore();
+  
+  const handelRemove = (data: Icart) => {
     removeItem(data);
     decrementCarts();
   };
@@ -26,12 +27,12 @@ const CartItem = ({ cart }: any) => {
         </h2>
       </div>
       <div className="p-12">
-        <h2
+        <button
           className="mb-2 text-xl font-bold dark:text-gray-400 hover:bg-gray-500 active:bg-gray-600 border-2 rounded-full px-2"
           onClick={() => handelRemove(cart)}
         >
           X
-        </h2>
+        </button>
       </div>
     </div>
   );

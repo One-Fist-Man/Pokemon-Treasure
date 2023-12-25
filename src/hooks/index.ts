@@ -9,7 +9,6 @@ export const useSets = () => {
       const sets = await getAllPokemonCards();
       return sets;
     },
-    // enabled: id != undefined,
     enabled: true,
     refetchOnMount: false,
     refetchOnWindowFocus: false,

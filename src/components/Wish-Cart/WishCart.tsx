@@ -4,7 +4,7 @@ import CartItem from "./CartItem";
 const WishCart = () => {
   const { cartList } = useCartStore();
   return (
-    <div className="border-2">
+    <div className="border-2 ">
       <div className="flex items-center ">
         <div className="px-4 w-1/3">
           <div className="w-2/3 px-4">
