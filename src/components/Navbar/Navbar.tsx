@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
-import { useCartStore } from "@/service/zustand";
 import Link from "next/link";
 import router from "next/router";
+import { Store } from "@/types/types";
+import { useCartStore } from "@/service/zustand";
 
 export const Navbar = () => {
   const {
@@ -13,7 +14,7 @@ export const Navbar = () => {
     AddLocalStorageToCartList,
     SetNumberOfCarts,
     loginOff,
-  }: any = useCartStore();
+  }: Store = useCartStore();
 
   useEffect(() => {
     if (cartList.length == 0) {

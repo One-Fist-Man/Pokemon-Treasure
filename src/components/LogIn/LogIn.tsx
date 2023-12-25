@@ -1,12 +1,11 @@
 import { useCartStore } from "@/service/zustand";
 import router from "next/router";
-import Footer from "../Footer/Footer";
 import { useEffect } from "react";
 
 const LogIn = () => {
   const { login, loginOn } = useCartStore();
 
-  const handelSubmit = (e: any) => {
+  const handelSubmit = (e:React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     loginOn();
     router.push("/");
@@ -17,12 +16,11 @@ const LogIn = () => {
   }, [login]);
 
   return (
-    <div className=" w-full flex items-center">
-      <div className=" w-full flex items-center flex-col">
+    // <div className="flex items-center">
+      <div className="flex items-center flex-col">
         <h1 className="font-bold">logIn</h1>
-
         <div className="border-2 border-blue-800 h-80 w-80 flex items-center p-12">
-          <form className=" w-2" onSubmit={handelSubmit}>
+          <form className=" w-2" onSubmit={()=>handelSubmit}>
             <label className="font-bold mx-2">Name:</label>
             <input className="border-2 m-2" type="text" required />
             <br />
@@ -36,8 +34,7 @@ const LogIn = () => {
           </form>
         </div>
       </div>
-      
-    </div>
+    // </div>
   );
 };
 

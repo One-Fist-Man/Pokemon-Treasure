@@ -5,7 +5,7 @@ export const getAllPokemonCards = async () => {
   return cards;
 };
 
-export const getCardById = async (id: any) => {
+export const getCardById = async (id: string) => {
   const cards = await PokemonTCG.findSetByID(id);
   return cards;
 };

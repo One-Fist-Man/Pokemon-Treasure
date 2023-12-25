@@ -2,8 +2,9 @@ import Link from "next/link";
 import { CardDetails } from "./CardDetails";
 import { CardImage } from "./CardImage";
 import router from "next/router";
+import { Set } from "pokemon-tcg-sdk-typescript/dist/sdk";
 
-export const Cards = ({ card }: any) => {
+export const Cards = ({ card }: {card:Set}) => {
   const { images, ...otherInfo } = card;
   return (
     <div >

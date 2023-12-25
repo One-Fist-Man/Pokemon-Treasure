@@ -1,10 +1,8 @@
-import Footer from "@/components/Footer/Footer";
 import LogIn from "@/components/LogIn/LogIn";
 const Login = () => {
   return (
-    <div>
+    <div className="min-h-[calc(100vh-140px)]  flex justify-center items-center">
       <LogIn></LogIn>
-      <Footer/>
     </div>
   );
 };
